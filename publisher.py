@@ -1,4 +1,5 @@
 import pika
+import time
 
 # Establish connection to RabbitMQ
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=pika.PlainCredentials('your-username', 'your-password')))
@@ -11,8 +12,10 @@ channel.queue_declare(queue='your-queue-name')
 messages = ["Message 1", "Message 2", "Message 3"]
 
 for message in messages:
-    channel.basic_publish(exchange='', routing_key='your-queue-name', body=message)
-    print(f"Published message: {message}")
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+    body = f"{timestamp} - {message}"
+    channel.basic_publish(exchange='', routing_key='your-queue-name', body=body)
+    print(f"Published message: {body}")
 
 # Close the connection
 connection.close()
