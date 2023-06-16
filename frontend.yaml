@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: nginx:latest  # Replace with your desired Nginx image and tag
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-configmap
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap
+data:
+  default.conf: |
+    http {
+      server {
+        listen 80;
+        server_name localhost;
+
+        location /rabbitmq-messages {
+          resolver <your_dns_resolver>;
+          proxy_pass http://rabbitmq:15672/api/queues/<your-vhost>/<your-queue-name>/get;
+          proxy_set_header Host $host;
+          proxy_set_header Authorization "Basic <your_base64_encoded_username_password>";
+        }
+
+        location / {
+          root /usr/share/nginx/html;
+          index index.html index.htm;
+        }
+      }
+    }
