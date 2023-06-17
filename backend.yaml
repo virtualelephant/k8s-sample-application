@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: rabbitmq
 spec:
-  replicas: 1  # Adjust the number of replicas as needed
+  replicas: 1
   selector:
     matchLabels:
       app: rabbitmq
@@ -14,15 +14,15 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:3.9.7  # Replace with the desired RabbitMQ image and version
+        image: rabbitmq:latest
         ports:
         - containerPort: 5672
-        - containerPort: 15672  # Optional: For RabbitMQ management UI
+        - containerPort: 15672
         env:
           - name: RABBITMQ_DEFAULT_USER
-            value: your-username
+            value: sample
           - name: RABBITMQ_DEFAULT_PASS
-            value: your-password
+            value: VMware123!
 ---
 apiVersion: v1
 kind: Service
@@ -36,5 +36,5 @@ spec:
       port: 5672
       targetPort: 5672
     - protocol: TCP
-      port: 15672  # Optional: For RabbitMQ management UI
+      port: 15672
       targetPort: 15672
