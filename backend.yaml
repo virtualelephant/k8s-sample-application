@@ -1,32 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: rabbitmq
 spec:
+  replicas: 1  # Adjust the number of replicas as needed
   selector:
     matchLabels:
-      app: backend
+      app: rabbitmq
   template:
     metadata:
       labels:
-        app: backend
+        app: rabbitmq
     spec:
       containers:
-      - name: backend
-        image: your-backend-image:tag
+      - name: rabbitmq
+        image: rabbitmq:3.9.7  # Replace with the desired RabbitMQ image and version
         ports:
-        - containerPort: 8080
-
+        - containerPort: 5672
+        - containerPort: 15672  # Optional: For RabbitMQ management UI
+        env:
+          - name: RABBITMQ_DEFAULT_USER
+            value: your-username
+          - name: RABBITMQ_DEFAULT_PASS
+            value: your-password
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: rabbitmq
 spec:
   selector:
-    app: backend
+    app: rabbitmq
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 5672
+      targetPort: 5672
+    - protocol: TCP
+      port: 15672  # Optional: For RabbitMQ management UI
+      targetPort: 15672
