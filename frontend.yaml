@@ -44,22 +44,22 @@ kind: ConfigMap
 metadata:
   name: nginx-configmap
 data:
-  default.conf: |
+  nginx.conf: |
+    events {
+      worker_connections 1024;
+    }
+    
     http {
+      upstream rabbitmq {
+        server rabbitmq:15672;
+      }
+      
       server {
         listen 80;
-        server_name localhost;
-
-        location /rabbitmq-messages {
-          resolver <your_dns_resolver>;
-          proxy_pass http://rabbitmq:15672/api/queues/<your-vhost>/<your-queue-name>/get;
-          proxy_set_header Host $host;
-          proxy_set_header Authorization "Basic <your_base64_encoded_username_password>";
-        }
-
+        
         location / {
-          root /usr/share/nginx/html;
-          index index.html index.htm;
+          proxy_pass http://rabbitmq;
+          proxy_set_header Host $host;
         }
       }
     }
