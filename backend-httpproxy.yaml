@@ -6,8 +6,22 @@ metadata:
     app: rabbitmq
 spec:
   virtualhost:
-    fqdn: rabbitmq.home.virtualelephant.com
+    fqdn: rabbitmq-admin.home.virtualelephant.com
   routes:
     - services:
       - name: rabbitmq-svc
         port: 15672
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  virtualhost:
+    fqdn: rabbitmq.home.virtualelephant.com
+  routes:
+    - services:
+      - name: rabbitmq-svc
+        port: 5672
