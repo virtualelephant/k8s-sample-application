@@ -2,7 +2,7 @@ import pika
 import time
 
 # Establish connection to RabbitMQ
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=pika.PlainCredentials('rbqadmin', 'VMware123!')))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq-svc.sample-app.svc.cluster.local', port=5672, credentials=pika.PlainCredentials('rbqadmin', 'VMware123!')))
 channel = connection.channel()
 
 # Declare a queue to publish messages
