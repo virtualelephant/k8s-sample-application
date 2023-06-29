@@ -11,9 +11,16 @@ Sample application for running inside Kubernetes to demonstrate different pieces
 - backend-storage.yaml: Creates the persistent volume, via an NFS mount, for RabbitMQ
 
 # Docker container for Publisher
-- Custom Docker container that is leveraged within the sample application to generate messages to the Backend RabbitMQ service
-- publisher.py (Python file) - Generates 3 messages, with a timestamp, and sends them to the RabbitMQ queue
-- publisher.sh (Script file) - Executes a cronjob inside the container to generate messages every minute
+- Container/Dockerfile - Custom Docker container that is leveraged within the sample application to generate messages to the Backend RabbitMQ service
+- Container/publisher.py (Python file) - Generates 3 messages, with a timestamp, and sends them to the RabbitMQ queue
+- Container/publisher.sh (Script file) - Executes a cronjob inside the container to generate messages every minute
+
+To use the Publisher part of the application, you will need to build the Docker container and upload it. I uploaded my version
+of the container into a private Harbor registry that I have running inside my VMware SDDC.
+
+$ docker build -t publisher:latest .
+$ docker tag publisher:latest <private-registry>/publisher:latest
+$ docker push <private-registry>/publisher:latest
 
 # Requirements:
 - Local system should have Docker to build the Publisher container
