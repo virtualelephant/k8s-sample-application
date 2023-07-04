@@ -1,65 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: nginx-deployment
+  namespace: sample-app
+  labels:
+    app: nginx
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: nginx
   template:
     metadata:
       labels:
-        app: frontend
+        app: nginx
     spec:
-      containers:
-      - name: frontend
-        image: nginx:latest  # Replace with your desired Nginx image and tag
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: nginx-config
-          mountPath: /etc/nginx/conf.d/default.conf
-          subPath: default.conf
       volumes:
-      - name: nginx-config
-        configMap:
-          name: nginx-configmap
-
+      - name: html
+        persistentVolumeClaim:
+          claimName: nginx-html-pvc
+      containers:
+      - name: nginx
+        image: harbor.home.virtualelephant.com/kubernetes/frontend-nginx:latest
+        volumeMounts:
+        - name: html
+          mountPath: "/usr/share/nginx/html"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: nginx-service
+  namespace: sample-app
 spec:
   selector:
-    app: frontend
+    app: nginx
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nginx-configmap
-data:
-  nginx.conf: |
-    events {
-      worker_connections 1024;
-    }
-    
-    http {
-      upstream rabbitmq {
-        server rabbitmq:15672;
-      }
-      
-      server {
-        listen 80;
-        
-        location / {
-          proxy_pass http://rabbitmq;
-          proxy_set_header Host $host;
-        }
-      }
-    }
+  type: ClusterIP

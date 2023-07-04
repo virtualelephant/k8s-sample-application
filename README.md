@@ -6,14 +6,32 @@ Sample application for running inside Kubernetes to demonstrate different pieces
 - Backend Application: Deploys RabbitMQ for a messaging queue service
 - Publisher Application: Runs a Python script that will generate messages to a specific RabbitMQ queue that it creates
 
-# Backend Application:
-- backend-statefulset.yaml: Creates a RabbitMQ stateful set, service accounts, service
-- backend-storage.yaml: Creates the persistent volume, via an NFS mount, for RabbitMQ
+# Frontend (NGINX) Application:
+- frontend-httpproxy.yaml - Frontend access through NSX ALB using the httpproxy object inside Kubernetes
+- frontend-storage.yaml - PersistentVolume and PersistentVolumeClaim that is shared by both the frontend (nginx) Deployment and the frontend-reader (Python script) Deployment to store the index.html file
+- frontend.yaml - NGINX Deployment and service
+- frontend-reader.yaml - Python container running the reader.py script through cron that pulls the messages off the RabbitMQ queue
+- html-configmap.yaml - File shared by both the frontend services
 
-# Docker container for Publisher
-- Container/Dockerfile - Custom Docker container that is leveraged within the sample application to generate messages to the Backend RabbitMQ service
-- Container/publisher.py (Python file) - Generates 3 messages, with a timestamp, and sends them to the RabbitMQ queue
-- Container/publisher.sh (Script file) - Executes a cronjob inside the container to generate messages every minute
+# Backend (RabbitMQ) Application:
+I used the built in RabbitMQ cluster operator functionality that is available here and modified the 'production-ready' YAML
+https://www.rabbitmq.com/kubernetes/operator/quickstart-operator.html
+
+- rabbitmq-prod.yaml: Creates a RabbitMQ stateful set, service accounts, service
+- rabbitmq-httpproxy.yaml: Creates the HTTPProxy for RabbitMQ
+
+# Docker container for RabbitMQ Reader
+- reader-container/Dockerfile - Customer Docker container that has a Python script running in cron that reads the messages written to the RabbitMQ queue 'log-messages'
+- reader-container/reader.py (Python file) - Reads messagess off of the RabbitMQ queue
+- reader-container/requirements.txt - Extra packages that are needed inside the Docker container
+
+# Docker container for NGINX
+- nginx-container/Dockerfile - Simple nginx container
+
+# Docker container for RabbitMQ Publisher
+- publisher-ontainer/Dockerfile - Custom Docker container that is leveraged within the sample application to generate messages to the Backend RabbitMQ service
+- publisher-container/publisher.py (Python file) - Generates 3 messages, with a timestamp, and sends them to the RabbitMQ queue
+- publisher-container/requirements.txt - Extra packages that need to be installed inside the Docker container
 
 To use the Publisher part of the application, you will need to build the Docker container and upload it. I uploaded my version
 of the container into a private Harbor registry that I have running inside my VMware SDDC.
@@ -24,4 +42,4 @@ $ docker push <private-registry>/publisher:latest
 
 # Requirements:
 - Local system should have Docker to build the Publisher container
-- Docker repository to push the Publisher container
+- Container repository to push the Publisher container
