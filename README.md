@@ -27,9 +27,9 @@ https://www.rabbitmq.com/kubernetes/operator/quickstart-operator.html
 
 To use the Reader part of the application, you will need to build the Docker container and upload it to a repo.
 ```
-$ docker build -t reader:latest .
-$ docker tag reader:latest <private-registry>/reader:latest
-$ docker push <private-registry>/reader:latest
+docker build -t reader:latest .
+docker tag reader:latest <private-registry>/reader:latest
+docker push <private-registry>/reader:latest
 ```
 
 ## Docker container for NGINX
@@ -37,9 +37,9 @@ $ docker push <private-registry>/reader:latest
 
 To use the NGINX part of the application, you will need to build the Docker container and upload it to a repo.
 ```
-$ docker build -t frontend-nginx:latest .
-$ docker tag frontend-nginx:latest <private-registry>/frontend-nginx:latest
-$ docker push <private-registry>/frontend-nginx:latest
+docker build -t frontend-nginx:latest .
+docker tag frontend-nginx:latest <private-registry>/frontend-nginx:latest
+docker push <private-registry>/frontend-nginx:latest
 ```
 
 ## Docker container for RabbitMQ Publisher
@@ -50,13 +50,14 @@ $ docker push <private-registry>/frontend-nginx:latest
 To use the Publisher part of the application, you will need to build the Docker container and upload it to a repo.
 
 ```
-$ docker build -t publisher:latest .
-$ docker tag publisher:latest <private-registry>/publisher:latest
-$ docker push <private-registry>/publisher:latest
+docker build -t publisher:latest .
+docker tag publisher:latest <private-registry>/publisher:latest
+docker push <private-registry>/publisher:latest
 ```
 
 # Requirements:
-- Local system should have Docker to build the Publisher container
+- Local system should have Docker to build the Publisher, Reader, and Frontend-NGINX containers
+- OS should have the 'nfs-common' package installed
 - Container repository to push the Publisher container
 - RabbitMQ Cluster Operator
 - NFS Client Provisioner for Kubernetes
@@ -66,15 +67,15 @@ $ docker push <private-registry>/publisher:latest
 https://www.rabbitmq.com/kubernetes/operator/quickstart-operator.html
 
 ```
-$ kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 ```
 
 ## Installing NFS Client Provisioner
 https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner
 
 ```
-$ helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
-$ helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
     --set nfs.server=x.x.x.x \
     --set nfs.path=/exported/path
 ```
