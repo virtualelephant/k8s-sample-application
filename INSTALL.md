@@ -19,3 +19,36 @@ kubectl apply -f storageclass.yaml
 ```
 kubectl apply -f rabbitmq-prod.yaml
 ```
+
+Wait until the StatefulSet for RabbitMQ is online. From there you can get the default username and password.
+
+```
+username="$(kubectl get secret rabbitmq-default-user -o jsonpath='{.data.username}' | base64 --decode)"
+echo "username: $username"
+password="$(kubectl get secret rabbitmq-default-user -o jsonpath='{.data.password}' | base64 --decode)"
+echo "password: $password"
+```
+
+If the application is being run inside a Tanzu Kubernetes Grid cluster with NSX ALB, the following HTTPProxy object can be leveraged to expose the RabbitMQ UI.
+
+```
+kubectl apply -f rabbitmq-httpproxy.yaml
+```
+
+### Create the Publisher Deployment to generate messages into RabbitMQ
+```
+kubectl apply -f publisher.yaml
+```
+
+### Create the Frontend Deployments to read the messages and display them in a webpage
+```
+kubectl apply -f frontend-storage.yaml
+kubectl apply -f html-configmap.yaml
+kubectl apply -f frontend-reader.yaml
+kubectl apply -f frontend.yaml
+```
+
+Again, if the environment is leveraging NSX ALB, create the HTTPProxy to expose NGINX.
+```
+kubectl apply -f frontend-httpproxy.yaml
+```
