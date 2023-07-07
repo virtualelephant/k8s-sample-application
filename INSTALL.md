@@ -35,6 +35,12 @@ If the application is being run inside a Tanzu Kubernetes Grid cluster with NSX 
 kubectl apply -f rabbitmq-httpproxy.yaml
 ```
 
+If you have an Ingress controller installed, such as HAProxy, the following Ingress object can be leveraged to expose the RabbitMQ UI.
+
+```
+kubectl apply -f rabbitmq-ingress.yaml
+```
+
 ### Create the Publisher Deployment to generate messages into RabbitMQ
 ```
 kubectl apply -f publisher.yaml
@@ -51,4 +57,9 @@ kubectl apply -f frontend.yaml
 Again, if the environment is leveraging NSX ALB, create the HTTPProxy to expose NGINX.
 ```
 kubectl apply -f frontend-httpproxy.yaml
+```
+
+Otherwise, leverage the Ingress object to expose NGINX.
+```
+kubectl apply -f frontend-ingress.yaml
 ```
