@@ -4,5 +4,5 @@ metadata:
   name: standard
 provisioner: cluster.local/nfs-subdir-external-provisioner
 parameters:
-  nfsServerHostname: 10.1.10.15
-  nfsPath: /opt/persistent/standard
+  nfsServerHostname: 10.1.10.7
+  nfsPath: /opt/persistent
