@@ -1,6 +1,8 @@
 # k8s-sample-application
 Sample application for running inside Kubernetes to demonstrate different pieces of technology.
 
+# Version 1.0
+
 # Application Description:
 - Frontend Application: Deploys  NGINX that will output messages placed on a specific RabbitMQ queue
 - Backend Application: Deploys RabbitMQ for a messaging queue service
@@ -77,5 +79,7 @@ https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner
 helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
 helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
     --set nfs.server=x.x.x.x \
-    --set nfs.path=/exported/path
+    --set nfs.path=/exported/path \
+    --create-namespace \
+    --namespace=nfs-storage
 ```

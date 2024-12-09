@@ -12,7 +12,7 @@ channel = connection.channel()
 channel.queue_declare(queue='log-messages')
 
 # Publish messages to the queue
-messages = ["INFO: [AZ2] Successfully initialized Sample Application version 0.1 ", "INFO: [AZ2] Download Sample Application via Git from https://github.com/virtualelephant/k8s-sample-application.git", "INFO: [AZ2] Sample Application Log Message #1", "INFO: [AZ2] Sample Application Log Message #2", "INFO: [AZ2] Sample Application Log Message #3"]
+messages = ["INFO: [AZ2] Successfully initialized Sample Application version 1.0 ", "INFO: [AZ2] Download Sample Application via Git from https://github.com/virtualelephant/k8s-sample-application.git", "INFO: [AZ2] Sample Application Log Message #1", "INFO: [AZ2] Sample Application Log Message #2", "INFO: [AZ2] Sample Application Log Message #3"]
 
 for message in messages:
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
