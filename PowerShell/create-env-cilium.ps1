@@ -1,6 +1,6 @@
 $vcServer = "vcenter-vcf01.home.virtualelephant.com"
 $vcUsername = "administrator@vsphere.local"
-$vcPassword = ""
+$vcPassword = "PASSWORD"
 
 Connect-VIServer -Server $vcServer -User $vcUsername -Password $vcPassword
 # Variables
